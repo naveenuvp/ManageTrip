@@ -10,4 +10,7 @@
 
     <string name="get_shift_details">Get Shift Details</string>
 
+    <string name="start_shift_time">Start time : </string>
+    <string name="end_shift_time">End time : </string>
+
 </resources>
