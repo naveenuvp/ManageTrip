@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="button_margin">16dp</dimen>
+
+
+    <dimen name="button_text_padding_left">20dp</dimen>
+    <dimen name="button_text_padding_right">12dp</dimen>
+    <dimen name="button_text_padding_regular">10dp</dimen>
+    <dimen name="button_text_padding_large_regular">25dp</dimen>
+
+    <dimen name="textview_padding_left">20dp</dimen>
+    <dimen name="textview_padding_right">12dp</dimen>
+    <dimen name="textview_padding_regular">10dp</dimen>
+    <dimen name="textview_padding_large_regular">25dp</dimen>
+
+    <dimen name="textview_padding">20dp</dimen>
+
+
+    <dimen name="textview_title_margin">16dp</dimen>
+
+</resources>

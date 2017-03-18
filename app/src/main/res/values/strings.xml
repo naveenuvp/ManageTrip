@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Deputy</string>
+
+    <!-- Permission related strings  -->
+    <string name="location_permission_string">You need to allow access to %1$s</string>
+    <string name="gps_permission_denied">The %1$s application requires information on your current location. \n\nPlease enable Location permission under %1$s application settings.</string>
+
+    <string name="start_shift">Start Shift</string>
+    <string name="end_shift">End Shift</string>
+
+    <string name="get_shift_details">Get Shift Details</string>
+
+</resources>
