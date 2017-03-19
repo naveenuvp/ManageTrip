@@ -87,7 +87,9 @@ public class ShiftDetailsFragment extends Fragment implements MapClickListener{
                     displayShiftDetailsListItems();
                 }
                 else{
-                    Toast.makeText(getActivity(), getText(R.string.shift_details_not_available), Toast.LENGTH_LONG);
+                    if(isAdded()){
+                        Toast.makeText(getActivity(), getText(R.string.shift_details_not_available), Toast.LENGTH_LONG);
+                    }
                 }
             }
 
