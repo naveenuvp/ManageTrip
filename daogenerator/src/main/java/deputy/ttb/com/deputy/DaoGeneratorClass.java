@@ -3,6 +3,10 @@ package deputy.ttb.com.deputy;
 import org.greenrobot.greendao.generator.Entity;
 import org.greenrobot.greendao.generator.Schema;
 
+/**
+ * Created by naveenu on 17/03/2017.
+ */
+
 public class DaoGeneratorClass {
     private static final String PROJECT_DIR = System.getProperty("user.dir");
 
@@ -10,9 +14,8 @@ public class DaoGeneratorClass {
         Schema schema = new Schema(1, "deputy.ttb.com.deputy.GreenDaoDB");
         schema.enableKeepSectionsByDefault();
 
-        // Business Info schema creation
-        businessInfo(schema);
-
+        // Shift details schema creation
+        shiftDetails(schema);
         try {
             new org.greenrobot.greendao.generator.DaoGenerator().generateAll(schema, PROJECT_DIR + "/app/src/main/java");
         } catch (Exception e) {
@@ -20,22 +23,16 @@ public class DaoGeneratorClass {
         }
     }
 
-
-
     /**
      * Function creates and Saves Business Info JSON Data
      *
      * @param schema
      * @return
      */
-    private static Entity businessInfo(final Schema schema){
-        Entity entity   =   schema.addEntity("BusinessInfo");
+    private static Entity shiftDetails(final Schema schema){
+        Entity entity   =   schema.addEntity("ShiftDetails");
         entity.addIdProperty().primaryKey();
-        entity.addStringProperty("name").notNull().unique();
-        entity.addStringProperty("logoUrl").notNull();
+        entity.addStringProperty("shiftDetails").notNull().unique();
         return entity;
     }
-
-
-
 }

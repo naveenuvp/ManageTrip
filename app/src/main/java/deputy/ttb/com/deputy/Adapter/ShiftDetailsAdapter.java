@@ -8,14 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.MapView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import deputy.ttb.com.deputy.MapClickListener;
 import deputy.ttb.com.deputy.Model.Shifts;
 import deputy.ttb.com.deputy.R;
+import deputy.ttb.com.deputy.Utils.Utility;
 
 /**
  * Created by naveenu on 18/03/2017.
@@ -25,15 +27,16 @@ public class ShiftDetailsAdapter extends BaseAdapter {
     private static String TAG   =   "ShiftDetailsAdapter";
 
     private LayoutInflater mInflater    =   null;
-    private Context context =   null;
+    private Context mContext =   null;
     private List<Shifts> mShiftItemsArray   =   null;
+    public MapClickListener mapClickListener    =   null;
 
-    public ShiftDetailsAdapter (Context context, List<Shifts> shiftItemsArray){
+    public ShiftDetailsAdapter (Context context, List<Shifts> shiftItemsArray, MapClickListener listener){
         mInflater   =   (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.context    =   context;
+        this.mContext    =   context;
         this.mShiftItemsArray   =   shiftItemsArray;
+        this.mapClickListener   =   listener;
     }
-
 
     @Override
     public int getCount() {
@@ -51,7 +54,7 @@ public class ShiftDetailsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
         Shifts shifts   =   mShiftItemsArray.get(position);
         ViewHolder holder;
         if(view != null){
@@ -65,12 +68,26 @@ public class ShiftDetailsAdapter extends BaseAdapter {
 
         ButterKnife.bind(this, view);
 
-        holder.textViewStartTime.setText(shifts.getStart());
-        holder.textViewEndTime.setText(shifts.getEnd());
+        holder.textViewStartTime.setText(mContext.getString(R.string.start_shift_time) +":"+ shifts.getStart());
+        if(shifts.getEnd() != null && shifts.getEnd().length() > 0){
+            holder.textViewEndTime.setText(mContext.getString(R.string.end_shift_time) +":"+ Utility.getDate(shifts.getEnd()));
+        }
+        else{
+            holder.textViewEndTime.setText(mContext.getString(R.string.end_shift_time) +":"+ mContext.getString(R.string.shift_in_progress));
+        }
 
+        Picasso.with(mContext)
+                .load(shifts.getImage())
+                .into(holder.imageView);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapClickListener.selectedMap(position);
+            }
+        });
         return view;
     }
-
 
     class ViewHolder{
         @BindView(R.id.imageView)
@@ -82,13 +99,8 @@ public class ShiftDetailsAdapter extends BaseAdapter {
         @BindView(R.id.textViewEndTime)
         TextView textViewEndTime;
 
-        @BindView(R.id.mapView)
-        MapView mapView;
-
         public ViewHolder(View view){
             ButterKnife.bind(this, view);
         }
-
-
     }
 }

@@ -1,5 +1,8 @@
 package deputy.ttb.com.deputy.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by naveenu on 14/03/2017.
  */
 
-public class Shifts {
+public class Shifts implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -33,6 +36,29 @@ public class Shifts {
     @SerializedName("image")
     @Expose
     private String image;
+
+    protected Shifts(Parcel in) {
+        id = in.readInt();
+        start = in.readString();
+        end = in.readString();
+        startLatitude = in.readString();
+        startLongitude = in.readString();
+        endLatitude = in.readString();
+        endLongitude = in.readString();
+        image = in.readString();
+    }
+
+    public static final Creator<Shifts> CREATOR = new Creator<Shifts>() {
+        @Override
+        public Shifts createFromParcel(Parcel in) {
+            return new Shifts(in);
+        }
+
+        @Override
+        public Shifts[] newArray(int size) {
+            return new Shifts[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -96,5 +122,22 @@ public class Shifts {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(start);
+        dest.writeString(end);
+        dest.writeString(startLatitude);
+        dest.writeString(startLongitude);
+        dest.writeString(endLatitude);
+        dest.writeString(endLongitude);
+        dest.writeString(image);
     }
 }

@@ -2,6 +2,7 @@ package deputy.ttb.com.deputy;
 
 import android.*;
 import android.Manifest;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -15,7 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,9 +24,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.maps.GoogleMap;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +33,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import deputy.ttb.com.deputy.GreenDaoDB.BusinessInfo;
-import deputy.ttb.com.deputy.Model.Business;
-import deputy.ttb.com.deputy.Model.Shifts;
 import deputy.ttb.com.deputy.RestClientService.ApiService;
 import deputy.ttb.com.deputy.RestClientService.RestClient;
 import deputy.ttb.com.deputy.Utils.Utility;
@@ -55,9 +50,7 @@ public class MainActivity extends AppCompatActivity
     private static String TAG = "MainActivity";
 
     private Context mContext = null;
-    public GoogleMap mGoogleMap = null;
     private GoogleApiClient mGoogleApiClient = null;
-    private Location mLastLocation = null;
     private ApiService mApiService = null;
 
     @BindView(R.id.imageButton)
@@ -69,11 +62,13 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    /**
+     *
+     * Initialize app variables and other services
+     */
     private void initialize() {
         mContext = this;
-
         mApiService = new RestClient().getApiService();
-
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(mContext)
                     .addConnectionCallbacks(this)
@@ -89,20 +84,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        ButterKnife.bind(this); // Inject Butterknife
+        ApplicationContext.getInstance().init(getApplicationContext());
         initialize();
-
         if (Build.VERSION.SDK_INT >= 23) {
             // Request required for permissions
-            if (requestForMultiplePermissions()) {
-                launchActivity();
-            }
-        } else {
-            launchActivity();
+            requestForMultiplePermissions();
         }
-
     }
-
 
     @Override
     public void onStart() {
@@ -112,7 +101,6 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
     }
 
-
     @OnClick({R.id.imageButton, R.id.shiftDetailsButton})
     public void startOrStopShift(View view) {
         switch (view.getId()){
@@ -120,13 +108,11 @@ public class MainActivity extends AppCompatActivity
                 startOrStopShift();
                 break;
             case R.id.shiftDetailsButton:
-                Log.d(TAG, "Shift details called");
-                getShifts();
+                showShifts();
                 break;
             default:
                 break;
         }
-
     }
 
     /**
@@ -147,6 +133,7 @@ public class MainActivity extends AppCompatActivity
             endShift(location);
         }
     }
+
     /**
      * Update Shift Tag
      * @param tag
@@ -160,23 +147,13 @@ public class MainActivity extends AppCompatActivity
     /**
      * Get Shift Details
      */
-    private void getShifts(){
-        Call<Shifts> request  =   mApiService.getShiftDetails();
-        Log.d(TAG, "Getting shift details...");
-        request.enqueue(new Callback<Shifts>() {
-            @Override
-            public void onResponse(Call<Shifts> call, Response<Shifts> response) {
-                Log.d(TAG, "Response shift details : "+response);
-            }
-
-            @Override
-            public void onFailure(Call<Shifts> call, Throwable t) {
-                Log.d(TAG, "Error "+t.getMessage());
-            }
-        });
+    private void showShifts(){
+        Fragment fragment   =   new ShiftDetailsFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .addToBackStack(fragment.getClass().getSimpleName()).commit();
     }
-
-
 
     /**
      *
@@ -185,11 +162,9 @@ public class MainActivity extends AppCompatActivity
      */
     private boolean requestForMultiplePermissions(){
         List<String> requiredPermissionsList = new ArrayList<String>();
-
         final List<String> permissionsList = new ArrayList<String>();
         if (!addPermission(permissionsList, android.Manifest.permission.ACCESS_FINE_LOCATION)) requiredPermissionsList.add("GPS");
         if (!addPermission(permissionsList, android.Manifest.permission.ACCESS_COARSE_LOCATION)) requiredPermissionsList.add("Course Location");
-
         if (permissionsList.size() > 0) {
             if (requiredPermissionsList.size() > 0) {
                 // Request custom message to user
@@ -222,7 +197,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -230,8 +204,6 @@ public class MainActivity extends AppCompatActivity
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission Granted
                     Log.v(TAG, "Permissions granted");
-                    launchActivity();
-
                 } else {
                     // Permission Denied
                     showPermissionDeniedError();
@@ -242,11 +214,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void launchActivity(){
-
-    }
-
-
+    /**
+     * Start shift
+      * @param location
+     */
     private void startShift(Location location){
         String today    =   Utility.getISO8601Date();
         Map<String, String> shiftDetailsMap  =   new HashMap<String, String>();
@@ -268,7 +239,10 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
+    /**
+     * End shift
+     * @param location
+     */
     private void endShift(Location location){
         String today    =   Utility.getISO8601Date();
         Map<String, String> shiftDetailsMap  =   new HashMap<String, String>();
@@ -291,11 +265,12 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
+    /**
+     * Show permission denied error
+     */
     private void showPermissionDeniedError(){
         // Permission Denied
         String errorMessage =   String.format(getResources().getString(R.string.gps_permission_denied), getResources().getString(R.string.app_name));
-        //Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
         Log.v(TAG, "Permissions denied");
         Utility.showMessageOKCancel(mContext, errorMessage, new DialogInterface.OnClickListener() {
             @Override
@@ -304,7 +279,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

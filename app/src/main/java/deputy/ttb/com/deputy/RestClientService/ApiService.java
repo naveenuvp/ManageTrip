@@ -2,7 +2,6 @@ package deputy.ttb.com.deputy.RestClientService;
 
 import java.util.Map;
 
-import deputy.ttb.com.deputy.GreenDaoDB.BusinessInfo;
 import deputy.ttb.com.deputy.Model.Shifts;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -19,11 +18,7 @@ public interface ApiService {
     // naveenu 74fc5ccd03ffacdaf90fdc6b2ce6bef10a344fff
     // Naveenu 4d8830c996e3ef226b630a92f692d71daaef2891
 
-    //  https://apjoqdqpi3.execute-api.us-west-2.amazonaws.com/dmc
-    @Headers("Authorization: Deputy 74fc5ccd03ffacdaf90fdc6b2ce6bef10a344fff")
-    @GET("business")
-    Call<BusinessInfo> getBusinessInfo();
-
+    // https://apjoqdqpi3.execute-api.us-west-2.amazonaws.com/dmc
     @Headers("Authorization: Deputy 74fc5ccd03ffacdaf90fdc6b2ce6bef10a344fff")
     @POST("shift/start")
     Call<ResponseBody> startShift(@QueryMap Map<String, String> params);

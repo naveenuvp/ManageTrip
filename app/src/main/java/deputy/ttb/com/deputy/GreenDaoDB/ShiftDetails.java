@@ -8,37 +8,33 @@ import org.greenrobot.greendao.annotation.*;
 // KEEP INCLUDES END
 
 /**
- * Entity mapped to table "BUSINESS_INFO".
+ * Entity mapped to table "SHIFT_DETAILS".
  */
 @Entity
-public class BusinessInfo {
+public class ShiftDetails {
 
     @Id
     private Long id;
 
     @NotNull
     @Unique
-    private String name;
-
-    @NotNull
-    private String logoUrl;
+    private String shiftDetails;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
     @Generated
-    public BusinessInfo() {
+    public ShiftDetails() {
     }
 
-    public BusinessInfo(Long id) {
+    public ShiftDetails(Long id) {
         this.id = id;
     }
 
     @Generated
-    public BusinessInfo(Long id, String name, String logoUrl) {
+    public ShiftDetails(Long id, String shiftDetails) {
         this.id = id;
-        this.name = name;
-        this.logoUrl = logoUrl;
+        this.shiftDetails = shiftDetails;
     }
 
     public Long getId() {
@@ -50,23 +46,13 @@ public class BusinessInfo {
     }
 
     @NotNull
-    public String getName() {
-        return name;
+    public String getShiftDetails() {
+        return shiftDetails;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setName(@NotNull String name) {
-        this.name = name;
-    }
-
-    @NotNull
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setLogoUrl(@NotNull String logoUrl) {
-        this.logoUrl = logoUrl;
+    public void setShiftDetails(@NotNull String shiftDetails) {
+        this.shiftDetails = shiftDetails;
     }
 
     // KEEP METHODS - put your custom methods here

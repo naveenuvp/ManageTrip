@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -17,9 +19,8 @@ import java.util.Locale;
 
 public class Utility {
 
-    private final static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSZZ";
-
-
+    private final static String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssz"; //
+    public static final String  GREEN_DAO_DB_NAME   =   "myShifts.db";
 
     /**
      *  Show Error message window
@@ -73,13 +74,20 @@ public class Utility {
      * Set date in ISO8601 format
      * @return
      */
-    public static void setISO8601Date(String strDate){
-        String today    =   null;
+    public static String getDate(String strDate){
 
-
-
-
-
+        DateFormat sourceFormat =   new SimpleDateFormat(ISO_8601_DATE_FORMAT);
+        try {
+            Date date   =   sourceFormat.parse(strDate);
+            DateFormat destFormat   =   new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            return destFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+
+
+
 
 }
